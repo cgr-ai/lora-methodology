@@ -238,8 +238,8 @@ is *generated forward* from that subject by a single composer and is never
 hand-edited.
 
 ```
-bare subject  →  forward composer  →  composed caption (what the trainer reads)
-(human-edited)    (applies envelope ONCE)   (NEVER hand-edited)
+bare subject  →  forward composer  →      composed caption (what the trainer reads)
+(human-edited)   (applies envelope ONCE)  (NEVER hand-edited)
 ```
 
 - The **source of truth** is a bare subject phrase per image — no trigger, no
