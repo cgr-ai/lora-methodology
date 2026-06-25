@@ -1,6 +1,7 @@
 ---
 layout: default
 title: "Style-LoRA Methodology: From Curation to Controlled Experiments"
+image: /assets/og.png
 ---
 
 
