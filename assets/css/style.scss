@@ -33,7 +33,7 @@
   max-width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
-  margin: 0 0 32px;
+  margin: 0 0 6px;
   font-size: 14px;
   line-height: 1.45;
 }
@@ -110,12 +110,12 @@ header h2 {
   color: #57606a;
 }
 
-/* "Table N" labels are inserted above each table by head-custom.html */
+/* "Table N" labels are inserted below each table by head-custom.html */
 .table-label {
   font-size: 0.85rem;
   font-weight: 500;
   color: #57606a;
-  margin: 1.6rem 0 0.3rem;
+  margin: 4px 0 30px;
 }
 
 /* Figures are clickable (lightbox wired in head-custom.html) */

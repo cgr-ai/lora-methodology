@@ -101,7 +101,7 @@ post-training. It runs as a **mandatory pre-train gate**, invoked automatically 
 the trainer; a non-zero exit halts the train.
 
 It computes the **DINOv2 intra-set distribution** of the folder — every image's
-cosine to the set centroid — and reports the full percentile spread:
+cosine to the set centroid — and reports the full percentile spread (Table 1):
 
 | substyle | n | min | p10 | p25 | p50 | p75 | p90 | max | mean | std | verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -123,7 +123,7 @@ double as the first concrete look at the three sub-styles themselves: ink_wash's
 limited-palette brush-and-wash, painterly's saturated gouache, storybook_sketch's
 pen-and-ink storybook linework. Each panel shows that folder's own thumbnails, its
 intra-set histogram, and its gates — the per-folder calibration of the previous
-section, from the operator's side:
+section, from the operator's side (Figures 1–3):
 
 ![Reference-curation UI for ink_wash: a grid of reference thumbnails each labelled with its DINOv2 cosine-to-centroid, beside an intra-set cosine histogram annotated with the mean and the p25/p10/p5 markers, and a caption-diversity PASS panel](assets/dataset_curation_ink_wash.png)
 
@@ -156,7 +156,7 @@ side, and §9 the related out-of-domain wall.
 
 The three sub-styles land at materially different calibrated p25 gates — *not*
 because anyone chose them, but because their reference sets have different natural
-self-similarity:
+self-similarity (Table 2):
 
 | sub-style | ref set | calibrated gate (p25) | reading |
 |---|---|---|---|
@@ -166,7 +166,7 @@ self-similarity:
 
 A ridgeline reader renders this as one KDE per folder of every image's cosine to its
 *own* centroid, with the folder mean (red) and the calibrated **p25 gate** (dashed)
-marked:
+marked (Figure 4):
 
 ![Reference-set distribution shape per folder: ridgeline of DINOv2 cosine-to-own-centroid for ink_wash, painterly, and storybook_sketch, each annotated with its mean and calibrated p25 gate](assets/audit_ref_clusters.png)
 
@@ -184,8 +184,8 @@ bimodality) straight off the plot during curation.
 
 The ridgeline is the *1-D marginal* of each folder's embedding distribution. The 2-D
 companion projects the full 768-d embeddings of all folders into one shared space and
-scatters them coloured by folder — the "view the dataset in latent space" picture. It
-reads the **same** cached embeddings (no GPU, no re-embed), so it's a pure reader on
+scatters them coloured by folder — the "view the dataset in latent space" picture
+(Figure 5). It reads the **same** cached embeddings (no GPU, no re-embed), so it's a pure reader on
 a warm cache.
 
 ![Reference-set embedding map: PCA projection of DINOv2 768-d embeddings for ink_wash, painterly, and storybook_sketch, each point an image coloured by folder, with folder centroids marked X and the lowest-cosine outliers ringed](assets/audit_ref_embedding_map.png)
@@ -198,7 +198,7 @@ top-left, `painterly` centre, `ink_wash` bottom-right — and the ringed points 
 curation outliers (lowest cosine to their own centroid), now located spatially.
 **Caveat:** the two PCA axes capture only ~16% of the 768-d variance, so visual
 overlap in the projection *understates* separation. The honest,
-projection-independent read is the **separability table** computed alongside — each
+projection-independent read is the **separability table** (Table 3) computed alongside — each
 folder's mean cosine to its *own* centroid vs the *nearest other* centroid, in full
 768-d:
 
@@ -358,7 +358,7 @@ for the rest of the 11k-step run — peak step5000, and steps 7000–11000 never
 so the back half of the budget added nothing; a redundant, low-variance style locks
 in fast.) But the *rate* stalls at 73%, and every low scorer is a **non-portrait
 subject** — scenery, animals, full-body scenes — while every high scorer (0.77–0.79)
-is a character close-up. That is not a style failure:
+is a character close-up. That is not a style failure (Figure 6):
 
 ![Two cel-shaded generations from the same LoRA: a character portrait scoring 0.79 and a peopleless village landscape scoring 0.15 — same style, opposite scores](assets/eval_conflation_nrtcel.png)
 
@@ -430,7 +430,7 @@ smooths the ink / flattens the paper grain before the LoRA ever sees it." That's
 *verifiable* claim, not a thing to assume either way. A latent-decode reader decodes
 the cached latents back to RGB (the model-space inverse of the VAE encode) and
 compares each to its original — visually and in the **same DINOv2 space the gate
-uses**:
+uses** (Figure 7):
 
 ![ink_wash VAE round-trip: per-image original, VAE round-trip, and amplified diff; the round-trip is visually identical, diff concentrated only on the finest ink-line edges](assets/latents_ink_wash_flux.png)
 
@@ -458,7 +458,7 @@ feature space before reading any training result.
 
 That FLUX round-trip is the **best case**. Re-running the same probe per base and per
 style — the SDXL workhorse alongside FLUX — shows input fidelity is not a single
-number but a function of two compounding factors:
+number but a function of two compounding factors (Table 4):
 
 | style (content) | FLUX PSNR / cos | SDXL PSNR / cos |
 |---|---|---|
@@ -486,7 +486,7 @@ Two factors multiply:
   more *and* the gap widens, because the missing SDXL channels hurt most exactly where
   the signal lives. `storybook_sketch` — finest linework, highest frequency — is the
   worst case: SDXL drops to 23 dB, an 8 dB gap, the amplified diff lighting up the
-  entire line structure.
+  entire line structure (Figure 8).
 
 ![storybook_sketch SDXL VAE round-trip: original, round-trip, and ×4 amplified diff — the diff panel glows along the full ink linework while the DINOv2 cosine still reads 0.995](assets/latents_storybook_sketch_sdxl.png)
 
@@ -512,7 +512,7 @@ rests on PSNR and the amplified diff, not the cosine.
 ### Data integrity: auditing the cached latents
 
 The complement to round-trip *fidelity* is input-distribution *sanity*. A
-data-integrity audit reads the cached latents as raw tensors (no VAE, no GPU) and
+data-integrity audit (Figure 9) reads the cached latents as raw tensors (no VAE, no GPU) and
 flags anomalies in the actual diffusion inputs — NaN/Inf, magnitude outliers (robust
 median/MAD z-score within each base), near-degenerate / channel-collapsed latents, and
 **foreign-base / bucket** mismatches. (This is NOT the DINOv2 style map: the VAE
@@ -549,7 +549,7 @@ runs in seconds on CPU.
 *LoRA weight audit, ink_wash FLUX: per-module update magnitude, effective rank vs nominal rank, normalised singular-value spectra, and adaptation energy by block depth — energy spiking in the late single blocks.*
 {:.caption}
 
-For the best ink_wash FLUX LoRA (rank 64, 566 adapted modules):
+For the best ink_wash FLUX LoRA (Figure 10; rank 64, 566 adapted modules):
 
 - **Where the style sits.** The update concentrates in the **MLP projections of the
   late single-stream transformer blocks** (`proj_mlp`, blocks ~25–35).
@@ -594,7 +594,7 @@ sweep (fixed training seed, lowest rank still within the noise band of rank 64).
 The FLUX finding has a clean SDXL analogue, and it holds on the **standard
 `naruto-blip-captions` set (nrtcel)** as much as on the project's own sub-styles — so
 it is not an artifact of the custom data. The same audit, reading the SDXL UNet's
-down→mid→up blocks:
+down→mid→up blocks (Figure 11):
 
 ![SDXL weight audit for nrtcel: per-module magnitude, rank utilisation, singular-value spectra, and adaptation energy by UNet depth showing the up (decoder) blocks carrying the style](assets/lora_weights_nrtcel_sdxl.png)
 
@@ -607,7 +607,7 @@ down→mid→up blocks:
 | `painterly` | 128 | **29.9%** | 24.7 / 128 |
 | `storybook_sketch` | 64 | **34.3%** | 14.1 / 64 |
 
-In all three the **up (decoder) block MLPs are the single largest energy bucket** —
+In all three (Table 5) the **up (decoder) block MLPs are the single largest energy bucket** —
 the SDXL counterpart of FLUX's late single-block MLPs — and the update is low-rank
 (median ~20–30% of the nominal rank). So the cross-architecture rule is the same:
 **the style rides on the MLP / feed-forward projections of the late, decoder half of
@@ -617,7 +617,7 @@ layers. The standard dataset behaves exactly like the bespoke ones. (`nrtcel` an
 directly comparable, and storybook concentrates a little more in the up-MLPs;
 `painterly` is shown at rank 128, the rank it ships at, so its 24.7/128 isn't on the
 same axis, but its up-MLP concentration and low utilisation match regardless. Each
-style's audit reads the tensor it ships — §9.)
+style's audit reads the tensor it ships — §9; painterly and storybook_sketch are Figures 12–13.)
 
 ![painterly SDXL weight audit — same shape: up-block MLPs dominate, low effective rank](assets/lora_weights_painterly_sdxl.png)
 
@@ -634,10 +634,10 @@ style's audit reads the tensor it ships — §9.)
 The normalised-spectra panel (bottom-left of each audit figure) shades the 10–90% band
 of σ_i/σ₁ across modules; its *width* is module-to-module heterogeneity in decay shape —
 wide ⇒ some modules are near rank-1 while others stay nearly flat. The FLUX panel
-shows a visibly wider band than any of the SDXL panels, and it is worth settling what
+shows a visibly wider band than any of the SDXL panels (Figure 14), and it is worth settling what
 that reflects. Reducing each adapter to one comparable scalar — the mean band width
 over fractional rank positions (5/10/25/50%, so a rank-64 and a rank-128 adapter share
-the same relative axis):
+the same relative axis) (Table 6):
 
 | LoRA | base | rank | band width | eff-rank range (p10 → p90) | CoV |
 |---|---|---|---|---|---|
@@ -694,7 +694,7 @@ image position attends to each text token (the diffusion counterpart of a salien
 map), and overlays that per-token heatmap on the output. The probe loads the **full**
 adapter (both the UNet and the text-encoder halves) and renders with the production
 sampler recipe, so its image tracks normal output rather than drifting toward a
-washed-out render; the attention *pattern* is the result either way.
+washed-out render; the attention *pattern* is the result either way (Figure 15).
 
 ![SDXL attention attribution, LoRA on: the generated whale-with-lantern, then per-token heatmaps — the trigger diffuse across the canvas, "whale" on the whale, "lantern" on the lantern](assets/attn_ink_wash_sdxl.png)
 
@@ -705,7 +705,7 @@ Two things show up: content words — *whale*, *lantern* (and on FLUX, *birds*,
 *branch*) — concentrate on their objects, and the trigger token is diffuse. The
 tempting reading is "the trigger learned to control the whole-image style." A
 **baseline control settles whether that's true**: run the same probe with the LoRA
-turned *off* (scale 0). The attribution barely moves —
+turned *off* (scale 0). The attribution barely moves (Table 7) —
 
 | token | LoRA off | LoRA on |
 |---|---|---|
@@ -715,7 +715,7 @@ turned *off* (scale 0). The attribution barely moves —
 
 (mass-50%-area; higher = more spread; identical seed/steps/size). With and without the
 LoRA the trigger is equally diffuse and the content words equally localised — only the
-rendered *style* changes (the LoRA-off image is plain base-model, not ink-wash):
+rendered *style* changes (the LoRA-off image is plain base-model, not ink-wash) (Figure 16):
 
 ![SDXL attention attribution, LoRA off (baseline): the same prompt in plain base-model style, with near-identical attention maps — trigger diffuse, whale/lantern localised](assets/attn_ink_wash_sdxl_baseline.png)
 
@@ -735,7 +735,7 @@ other two SDXL sub-styles — same prompt (a mouse in a top hat at a tea table),
 seed — reproduces it: the per-token maps barely move between LoRA-on and LoRA-off,
 while only the rendered *medium* changes. For `painterly`, the LoRA turns a plain base
 render into oil-brush colour; the trigger stays diffuse and *mouse* / *table* / *hat*
-stay pinned to their objects either way:
+stay pinned to their objects either way (Figures 17–18):
 
 ![painterly SDXL attention attribution, LoRA on: an oil-painterly mouse in a top hat at a tea table, with per-token heatmaps — trigger diffuse, mouse/table/hat localised](assets/attn_painterly_sdxl.png)
 
@@ -748,7 +748,7 @@ stay pinned to their objects either way:
 {:.caption}
 
 For `storybook_sketch`, the LoRA swaps the same base scene for pen-and-ink line work —
-and again the attribution is unchanged, only the medium:
+and again the attribution is unchanged, only the medium (Figures 19–20):
 
 ![storybook_sketch SDXL attention attribution, LoRA on: a pen-and-ink storybook mouse in a top hat at a cafe table, with per-token heatmaps — trigger diffuse, mouse/table/hat localised](assets/attn_storybook_sketch_sdxl.png)
 
@@ -764,7 +764,7 @@ The probe is still good for one thing — confirming that *content* tokens land 
 objects, a clean check that prompt and image align. It works identically on FLUX, whose
 MMDiT *joint* attention needs a different extraction (intercepting the joint attention
 and isolating the image→text block; all 57 attention layers × every step were
-captured); there *birds* and *branch* localise even more sharply:
+captured); there *birds* and *branch* localise even more sharply (Figure 21):
 
 ![FLUX attention attribution: four birds on a branch, "birds" on the birds and "branch" along the branch, trigger diffuse](assets/attn_ink_wash_flux.png)
 
@@ -773,7 +773,7 @@ captured); there *birds* and *branch* localise even more sharply:
 
 The same off-switch closes the loop on FLUX too: with the LoRA off the birds render in
 plain base style, yet *birds* and *branch* land in the same places — the attribution is
-a property of the base model's joint attention, not the style adapter:
+a property of the base model's joint attention, not the style adapter (Figure 22):
 
 ![FLUX attention attribution, LoRA off (baseline): four birds on a branch in plain base-model style, with the same birds/branch localisation and diffuse trigger](assets/attn_ink_wash_flux_baseline.png)
 
@@ -793,7 +793,7 @@ SDXL — including the LoRA-on/off A/B above — runs on a single consumer card.
 SDXL is the workhorse platform; all three styles were trained and evaluated on it
 first. All numbers are **best-checkpoint, in-domain, 2-seed mean** (best step selected
 per style/seed on the stable mean, then averaged over two training seeds). `gate` is
-each folder's calibrated p25 (§3).
+each folder's calibrated p25 (§3). The per-style picture (Table 8):
 
 | sub-style | best-ckpt (per seed) | mean | gate | margin | rate | memo |
 |---|---|---|---|---|---|---|
@@ -817,7 +817,7 @@ ink_wash was reduced from a 213-image set to a **deliberate 109-image variety pi
 (subject/design diversity at one consistent style — *not* a random subset). Its
 intra-set stats nearly match the 213 (mean 0.701 vs 0.710, **p25 0.658 ≈ 0.659**), so
 it's scored against its own folder and stays directly comparable to the 213 baseline
-with no restore-to-213 needed.
+with no restore-to-213 needed (Table 9):
 
 | variant | set / rank | mean | gate | margin | rate | memo |
 |---|---|---|---|---|---|---|
@@ -856,7 +856,7 @@ the rank-128 runs. Two of the four rank-128 runs share their training seed with 
 rank-64 runs — a within-seed A/B where rank is the only variable — while the other two
 widen the rank-128 sample. Reading both the controlled within-seed Δ *and* the full
 rank-128 seed range against the rank-64 one, neither small set reproduces the ink_wash
-win:
+win (Table 10):
 
 | sub-style | rank-128 (mean, range; n) | rank-64 (mean, range; n) | within-seed Δ |
 |---|---|---|---|
@@ -888,7 +888,7 @@ alone.
 ### The shared wall: ~0% diversity on all three
 
 Held-out novel-subject prompts (the 5-prompt tail), per-image DINOv2 vs the relaxed p10
-gate:
+gate (Table 11):
 
 | sub-style | diversity sims (5) | p10 gate | rate |
 |---|---|---|---|
@@ -909,7 +909,7 @@ moved with rank; the diversity wall did not move with *any* recipe knob.
 
 FLUX is the hero-quality platform but was the *last* lever, run only after the cheap
 SDXL levers stalled, and judged on the same mean/margin bar — never promoted on its
-"hero model" reputation.
+"hero model" reputation (Table 12):
 
 | variant | mean | gate | margin | rate | note |
 |---|---|---|---|---|---|

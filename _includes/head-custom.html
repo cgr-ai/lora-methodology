@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var lbl = document.createElement('div');
     lbl.className = 'table-label';
     lbl.textContent = 'Table ' + (i + 1);
-    tables[i].parentNode.insertBefore(lbl, tables[i]);
+    tables[i].parentNode.insertBefore(lbl, tables[i].nextSibling);
   }
 
   var ov = document.createElement('div');
