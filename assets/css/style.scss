@@ -3,7 +3,10 @@
 
 @import "{{ site.theme }}";
 
+/* Works for both Cayman (.main-content) and Architect (#main-content) wrappers */
+
 /* Center figures and give a little breathing room */
+#main-content img,
 .main-content img {
   display: block;
   margin: 1.2rem auto 0.4rem;
@@ -11,6 +14,7 @@
 }
 
 /* Figure captions: the italic paragraph tagged {:.caption} under each image */
+#main-content p.caption,
 .main-content p.caption {
   margin: 0 auto 1.8rem;
   max-width: 90%;
@@ -21,6 +25,7 @@
 }
 
 /* Tables: let wide tables scroll on small screens instead of overflowing */
+#main-content table,
 .main-content table {
   display: block;
   width: max-content;

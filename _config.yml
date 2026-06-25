@@ -1,6 +1,6 @@
 title: "Style-LoRA Methodology"
 description: "From curation to controlled experiments — calibrated gates, controlled A/Bs, and metric design for style LoRAs, with three illustration sub-styles as the worked example."
-theme: jekyll-theme-cayman
+theme: jekyll-theme-architect
 
 url: "https://cgr-ai.github.io"
 baseurl: "/lora-methodology"
