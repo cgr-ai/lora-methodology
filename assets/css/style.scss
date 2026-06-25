@@ -1,0 +1,29 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* Center figures and give a little breathing room */
+.main-content img {
+  display: block;
+  margin: 1.2rem auto 0.4rem;
+  max-width: 100%;
+}
+
+/* Figure captions: the italic paragraph tagged {:.caption} under each image */
+.main-content p.caption {
+  margin: 0 auto 1.8rem;
+  max-width: 90%;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #6a737d;
+}
+
+/* Tables: let wide tables scroll on small screens instead of overflowing */
+.main-content table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
