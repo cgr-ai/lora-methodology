@@ -1,4 +1,5 @@
 _site/
 .jekyll-cache/
+page_icon.png
 .sass-cache/
 Gemfile.lock
