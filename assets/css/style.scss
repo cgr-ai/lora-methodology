@@ -24,13 +24,38 @@
   color: #6a737d;
 }
 
-/* Tables: let wide tables scroll on small screens instead of overflowing */
+/* Tables: clear column separation, a distinct header row, zebra striping,
+   horizontal scroll when too wide, and breathing room before the next text */
 #main-content table,
 .main-content table {
   display: block;
   width: max-content;
   max-width: 100%;
   overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 32px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+#main-content table th,
+#main-content table td,
+.main-content table th,
+.main-content table td {
+  border: 1px solid #cbd6e2;
+  padding: 7px 14px;
+  text-align: left;
+}
+#main-content table th,
+.main-content table th {
+  background: #e7f0fa;
+  color: #14375e;
+  font-weight: 700;
+  border-bottom: 2px solid #9bb8d6;
+  white-space: nowrap;
+}
+#main-content table tbody tr:nth-child(even) td,
+.main-content table tbody tr:nth-child(even) td {
+  background: #f5f9fd;
 }
 
 /* --- Architect layout tuning: tighter header, wider column, no sidebar --- */

@@ -1,5 +1,5 @@
 title: "Style-LoRA Methodology"
-description: "Calibrated per-dataset gates, controlled A/Bs, and metric design for style LoRAs — three illustration sub-styles as the worked example."
+description: "Calibrated per-dataset gates, controlled A/Bs, and metric design for style LoRAs."
 theme: jekyll-theme-architect
 
 url: "https://cgr-ai.github.io"
