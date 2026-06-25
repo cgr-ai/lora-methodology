@@ -524,13 +524,15 @@ latent is a reconstruction tensor, so its pooled-PCA panel groups by
 *VAE-latent data-integrity audit: per-latent mean-vs-std scatter, L2 magnitude histogram, per-channel std boxplot, and a pooled-latent PCA across the three styles, anomalies ringed. This surfaced the stale mixed-base latents.*
 {:.caption}
 
-It immediately caught a real **cache-hygiene** issue: `painterly` and
+It surfaced a **cache-hygiene** artifact — not a quality bug: `painterly` and
 `storybook_sketch` each carry a *matched pair per image* — a stale **SDXL 4-ch** latent
-left over from the SDXL runs **and** a fresh **FLUX 16-ch** latent from a later pass
-(the trainer content-hashes its cache keys, so the two coexist; it reads only the set
-matching the current VAE, but the cruft lingers). `ink_wash` is the only clean
-all-FLUX cache. "Clear the latent cache before a re-train on a new base" became a
-concrete step once the audit surfaced the leftover latents.
+left over from the SDXL runs **and** a fresh **FLUX 16-ch** latent from a later pass.
+Because the trainer keys its cache by VAE and loads only the set matching the current
+base, the stale latents are **inert**: they never enter training, and `ink_wash`'s
+clean all-FLUX cache trains identically. The audit's value here is the *confirmation* —
+no foreign-base latent reached the training inputs, the failure mode it guards against —
+not a defect it caught. The upshot is housekeeping: clear the latent cache on a base
+switch to reclaim disk and remove the ambiguity.
 
 ---
 
