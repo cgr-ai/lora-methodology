@@ -66,3 +66,35 @@ header h2 {
   float: none;
   width: 100%;
 }
+
+/* --- Figure & table numbering, and click-to-expand affordance --- */
+
+/* Auto-number figures: prefix each caption with "Figure N." */
+#main-content,
+.main-content {
+  counter-reset: figure-counter;
+}
+#main-content p.caption,
+.main-content p.caption {
+  counter-increment: figure-counter;
+}
+#main-content p.caption::before,
+.main-content p.caption::before {
+  content: "Figure " counter(figure-counter) ". ";
+  font-weight: 500;
+  color: #57606a;
+}
+
+/* "Table N" labels are inserted above each table by head-custom.html */
+.table-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #57606a;
+  margin: 1.6rem 0 0.3rem;
+}
+
+/* Figures are clickable (lightbox wired in head-custom.html) */
+#main-content img,
+.main-content img {
+  cursor: zoom-in;
+}

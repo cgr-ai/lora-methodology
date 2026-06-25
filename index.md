@@ -103,10 +103,9 @@ the trainer; a non-zero exit halts the train.
 It computes the **DINOv2 intra-set distribution** of the folder — every image's
 cosine to the set centroid — and reports the full percentile spread:
 
-```
-substyle    n    min   p10   p25   p50   p75   p90   max   mean   std   verdict
-ink_wash  109  0.555 0.615 0.658 0.703 0.746 0.776 0.855 0.701 0.064  PASS
-```
+| substyle | n | min | p10 | p25 | p50 | p75 | p90 | max | mean | std | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `ink_wash` | 109 | 0.555 | 0.615 | 0.658 | 0.703 | 0.746 | 0.776 | 0.855 | 0.701 | 0.064 | PASS |
 
 Two things fall out of this one audit:
 

@@ -1,0 +1,40 @@
+<style>
+  .lb-overlay{position:fixed;inset:0;background:rgba(10,12,14,0.86);display:none;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;padding:24px}
+  .lb-overlay.open{display:flex}
+  .lb-overlay img{max-width:94vw;max-height:94vh;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,0.5)}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var root = document.getElementById('main-content');
+  if (!root) return;
+
+  var tables = root.querySelectorAll('table');
+  for (var i = 0; i < tables.length; i++) {
+    var lbl = document.createElement('div');
+    lbl.className = 'table-label';
+    lbl.textContent = 'Table ' + (i + 1);
+    tables[i].parentNode.insertBefore(lbl, tables[i]);
+  }
+
+  var ov = document.createElement('div');
+  ov.className = 'lb-overlay';
+  ov.setAttribute('aria-hidden', 'true');
+  var big = document.createElement('img');
+  ov.appendChild(big);
+  document.body.appendChild(ov);
+
+  function close() { ov.classList.remove('open'); ov.setAttribute('aria-hidden', 'true'); big.removeAttribute('src'); }
+  ov.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  var imgs = root.querySelectorAll('img');
+  for (var j = 0; j < imgs.length; j++) {
+    imgs[j].addEventListener('click', function () {
+      big.src = this.currentSrc || this.src;
+      big.alt = this.alt || '';
+      ov.classList.add('open');
+      ov.setAttribute('aria-hidden', 'false');
+    });
+  }
+});
+</script>
